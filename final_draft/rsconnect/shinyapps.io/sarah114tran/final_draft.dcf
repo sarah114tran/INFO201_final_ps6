@@ -5,9 +5,9 @@ account: sarah114tran
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 8483639
-bundleId: 6918967
+bundleId: 6919194
 url: https://sarah114tran.shinyapps.io/final_draft/
-when: 1678062271.44978
-lastSyncTime: 1678062271.44979
+when: 1678068385.99673
+lastSyncTime: 1678068385.99675
 asMultiple: FALSE
 asStatic: FALSE

@@ -22,16 +22,19 @@ ui <- fluidPage(
                           fluidRow(
                             column(6,
                                    radioButtons("color", "Choose color",
-                                                choices = c("black","skyblue", "lawngreen", "orangered",
-                                                                     "purple", "gold"))
+                                                choices = c("black","skyblue", "lawngreen", "orangered", "purple", "gold"))
                             )
+                          ),
+                          fluidRow(
+                            selectInput("change_plot", "Select the type of Plot", choices = c("Scatter-line", "Bar"),
+                                        selected = "Scatter-Line Plot")
                           ),
                           radioButtons("year", "Select the Year:",
                                        choices = unique(uah$year),
                                        selected = 1978)
                         ),
-                        mainPanel( plotOutput("plot"),
-                                   textOutput("result")
+                        mainPanel(plotOutput("plot"),
+                                  textOutput("result")
                         )
                       )
              ),
@@ -64,8 +67,9 @@ server <- function(input, output) {
     uah %>% 
       sample_n(5)
   })
-  
+
   output$plot <- renderPlot({
+    if(input$change_plot == "Scatter-line") {
     data <- sample() %>%
       group_by(month) %>% 
       filter(!is.na(month)) %>% 
@@ -77,6 +81,18 @@ server <- function(input, output) {
       scale_x_continuous(breaks = 1:12) +
       labs(title = "Average Temperature of Each Month by Year", x = "Month",
            y = "Average Temperature")
+    }else{
+      data <- sample() %>%
+        group_by(month) %>% 
+        filter(!is.na(month)) %>% 
+        summarise(avg_year = sum(temp)/n()) 
+      ggplot(data, aes(month, avg_year)) +
+        geom_bar(stat = "identity", fill=input$color) +
+        ylim(-1, 1) +
+        scale_x_continuous(breaks = 1:12) +
+        labs(title = "Average Temperature of Each Month by Year", x = "Month",
+             y = "Average Temperature")
+    }
   })
   
   output$result <- renderText({
@@ -102,7 +118,7 @@ server <- function(input, output) {
     num_obvs <- nrow(sample1())
     paste(input$region, "has", num_obvs, "observations")
   })
-  
+
 } 
 
 # Run the application 
